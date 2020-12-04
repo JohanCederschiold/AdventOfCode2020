@@ -1,0 +1,3 @@
+pid:937877382 eyr:2029
+ecl:amb hgt:187cm iyr:2019
+byr:1933 hcl:#888785
