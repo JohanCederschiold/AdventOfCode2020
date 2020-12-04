@@ -5,13 +5,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Johan2 {
 
     private static String [] requiredFields = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
 
+    static String testpassport = "byr:2010 pid:#1bb4d8 eyr:2021 hgt:186cm iyr:2020 ecl:grt";
 
     public static void main(String[] args) throws IOException {
 
@@ -26,6 +26,7 @@ public class Johan2 {
             }
         }
         System.out.println(counter);
+
 
     }
 
@@ -63,6 +64,7 @@ public class Johan2 {
         }
         return true;
     }
+
 
     private static boolean isValid(String passport) {
         for (String field : requiredFields) {
