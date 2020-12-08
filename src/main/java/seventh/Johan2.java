@@ -4,21 +4,63 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Johan2 {
 
     private final static String file = "src/main/java/seventh/bagage.txt";
+    private static Map<String, List<String>> test;
 
     public static void main(String[] args) throws IOException {
 
         List<String> input = readAnswersToList();
-        Map<String, List<String>> test = mapContent(input);
-        System.out.println(test.get("shiny gold"));
+        test = mapContent(input);
 
+        List<String> searchBags = getContent("shiny gold");
+        List<String> accumulatedBags = new ArrayList<String>();
+        accumulatedBags.addAll(searchBags);
+
+        while (true) {
+
+            List<String> foundBags = new ArrayList<String>();
+            for (String s : searchBags) {
+                foundBags.addAll(getContent(s));
+            }
+            if (foundBags.isEmpty()) {
+                break;
+            } else {
+                accumulatedBags.addAll(foundBags);
+                searchBags = foundBags;
+            }
+        }
+
+        for (String g : accumulatedBags) {
+
+        }
+
+        System.out.println(accumulatedBags.size());
+    }
+
+    private static List<String> getContent (String container) {
+
+        List<String> nestedBags = new ArrayList<String>();
+        List<String> content = test.get(container);
+
+        for (String bag : content) {
+
+            int pcs = 0;
+            try {
+                pcs = Integer.parseInt(bag.substring(0,1));
+            } catch (NumberFormatException e) {
+                return Collections.emptyList();
+            }
+
+            String newContainer = bag.replaceAll("[0-9]", "").trim();
+            for (int i = 0 ; i < pcs ; i++ ) {
+                nestedBags.add(newContainer);
+            }
+        }
+        return nestedBags;
 
     }
 
@@ -58,5 +100,4 @@ public class Johan2 {
 
         return answers;
     }
-
 }
