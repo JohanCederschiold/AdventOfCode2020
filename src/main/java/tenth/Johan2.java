@@ -17,6 +17,8 @@ public class Johan2 {
         printList(adapters);
 
 
+
+
     }
 
     private static void printList (List<Integer> list) {
