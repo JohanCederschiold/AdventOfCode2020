@@ -9,7 +9,7 @@ public class Johan2 {
 
         //100 000 000 000 000
 
-        int [] test = convertToIntegersArray(makeBusArray());
+        long [] test = convertToLongArray(makeBusArray());
         int id = findBusWithHighestId(test);
         int index = findIndexOfHighestBus(id, test);
         findSeries(index, test);
@@ -17,11 +17,18 @@ public class Johan2 {
 
     }
 
-    private static void findSeries (int index, int [] test) {
+    private static void findSeriesWithBigInteger () {
+
+    }
+
+    private static void findSeries (int index, long [] test) {
 
         int lengthOfArray = test.length;
 
-        for (int i = 0;  i < Integer.MAX_VALUE ; i += test[index]) {
+        for (long i = 0;  i < Long.MAX_VALUE ; i += test[index]) {
+            if (i % 100000 == 0) {
+                System.out.println(i);
+            }
             boolean straightFlush = true;
             //Looping upwards to check
             for (int upwards = index + 1 ; upwards < lengthOfArray ; upwards++) {
@@ -50,14 +57,14 @@ public class Johan2 {
                 }
             }
             if (straightFlush) {
-                System.out.println(i);
+                System.out.println(i + test.length - index - 1);
                 break;
             }
         }
 
     }
 
-    private static int findIndexOfHighestBus (int bussline, int [] busses) {
+    private static int findIndexOfHighestBus (int bussline, long [] busses) {
         for (int i = 0 ; i < busses.length ; i++ ) {
             if (busses[i] == bussline) {
                 return i;
@@ -66,10 +73,10 @@ public class Johan2 {
         return -1;
     }
 
-    private static int findBusWithHighestId (int [] busses) {
+    private static int findBusWithHighestId (long [] busses) {
         int highestId = 0;
-        for (int s : busses) {
-            highestId = Math.max(highestId, s);
+        for (long s : busses) {
+            highestId = Math.max( (int) highestId, (int) s);
         }
         return highestId;
     }
@@ -78,8 +85,8 @@ public class Johan2 {
         return busses.split(",");
     }
 
-    private static int [] convertToIntegersArray (String [] busses) {
-        int [] bussesArray = new int [busses.length];
+    private static long [] convertToLongArray(String [] busses) {
+        long [] bussesArray = new long [busses.length];
         for (int i = 0 ; i < busses.length ; i++ ) {
             try {
                 bussesArray[i] = Integer.parseInt(busses[i]);
