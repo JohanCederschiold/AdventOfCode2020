@@ -2,12 +2,19 @@ package thirteen;
 
 public class Johan2 {
 
-    private static String busses = "19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,823,x,x,x,x,x,x,x,23,x,x,x,x,x,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,443,x,x,x,x,x,37,x,x,x,x,x,x,13";
-    //private static String busses = "7,13,x,x,59,x,31,19";
+    //private static String busses = "19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,823,x,x,x,x,x,x,x,23,x,x,x,x,x,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,443,x,x,x,x,x,37,x,x,x,x,x,x,13";
+    private static String busses = "7,13,x,x,59,x,31,19";
+
 
     public static void main(String[] args) {
 
-        //100 000 000 000 000
+        /**
+         *  Execution of the actual scenario takes a really long time
+         *  If you really want to try it you can change it by commenting in the "real" data.
+         */
+
+        //1012814086400000
+        //1058443396696855
 
         long [] test = convertToLongArray(makeBusArray());
         int id = findBusWithHighestId(test);
@@ -33,9 +40,7 @@ public class Johan2 {
             //Looping upwards to check
             for (int upwards = index + 1 ; upwards < lengthOfArray ; upwards++) {
                 if (test[upwards] != 0) {
-                    if ((i + (upwards - index))% test[upwards] == 0) {
-                        //System.out.printf("%d + %d / %d%n", i , upwards - index, test[upwards]);
-                    } else {
+                    if ((i + (upwards - index))% test[upwards] != 0) {
                         straightFlush = false;
                     }
                 }
@@ -48,16 +53,14 @@ public class Johan2 {
                 for (int downwards = index -1 ; downwards >= 0; downwards--) {
                     //No need to check if id is 0
                     if (test[downwards] != 0) {
-                        if ((i - (index - downwards )) % test[downwards] == 0 ) {
-                            //System.out.println();
-                        } else {
+                        if ((i - (index - downwards )) % test[downwards] != 0 ) {
                             straightFlush = false;
                         }
                     }
                 }
             }
             if (straightFlush) {
-                System.out.println(i + test.length - index - 1);
+                System.out.println(i - index);
                 break;
             }
         }
