@@ -3,8 +3,6 @@ package thirteen;
 public class Johan1 {
 
     private static int timestamp = 1005162;
-
-
     private static int [] testtable = {19,41,823,23,17,29,443,37,13};
 
     public static void main(String[] args) {
