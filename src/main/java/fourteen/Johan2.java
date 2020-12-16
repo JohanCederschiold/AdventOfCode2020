@@ -12,19 +12,14 @@ import java.util.Map;
 public class Johan2 {
 
     private final static String file = "src/main/java/fourteen/input.txt";
-    private static Map<Integer, Long> valueMemory;
-    private static String bigValue = "000100011010101100101001010011110000";
+    private static Map<Long, Long> valueMemory;
 
 
     public static void main(String[] args) throws IOException {
 
-        valueMemory = new HashMap<Integer, Long>();
-        //long v1 = applyMaskToNumber("0001101XX011X0X10X10000X010XX111000X", 716205);
-        //long v2 = applyMaskToNumber("1X101010X01101110000001110X11XXX0100", 58824493);
-        //getAllVariants("1X101010X01101110000001110X11XXX0100".toCharArray());
-        applyMaskToNumber("1X101010X01101110000001110X11XXX0100", 32);
-
-        //readMaskByMask();
+        valueMemory = new HashMap<Long, Long>();
+        readMaskByMask();
+        System.out.println(calculateSum());
 
 
     }
@@ -41,29 +36,23 @@ public class Johan2 {
                 String [] separateValueAndPosition = command.split(" = ");
                 int memoryPosition = Integer.parseInt(separateValueAndPosition[0].replaceAll("[^0-9]", ""));
                 long value = Long.parseLong(separateValueAndPosition[1].trim());
-                valueMemory.put(memoryPosition, applyMaskToNumber(currentMask, value));
+                List<Long> listOfMemoryPositions = convertListOfBinariesToLongs(getBinaryMemoryPositionsBasedOnMaskAndNumber(currentMask, memoryPosition));
+                for(Long l : listOfMemoryPositions) {
+                    valueMemory.put(l, value);
+                }
             }
-        }
-        //printMap();
-        System.out.println(calculateSum());
-    }
-
-
-    private static void printMap () {
-        for (Map.Entry<Integer, Long> entry : valueMemory.entrySet()) {
-            System.out.printf("Memoryposition(%d): %d%n", entry.getKey(), entry.getValue());
         }
     }
 
     private static long calculateSum () {
         long sum = 0;
-        for (Map.Entry<Integer, Long> entry : valueMemory.entrySet()) {
+        for (Map.Entry<Long, Long> entry : valueMemory.entrySet()) {
             sum += entry.getValue();
         }
         return sum;
     }
 
-    private static long applyMaskToNumber (String mask, long number) {
+    private static List<String> getBinaryMemoryPositionsBasedOnMaskAndNumber(String mask, long number) {
         char [] binaryString = convertToBinaryString(mask.length(), number).toCharArray();
         char [] charMask = mask.toCharArray();
 
@@ -75,16 +64,18 @@ public class Johan2 {
             }
         }
         List<String> binaryvariants = getAllVariants(charMask);
-        System.out.println(binaryvariants.size());
-        for(String s : binaryvariants) {
-            System.out.println(s);
-        }
-
-        //Make method exchanging Xs for 1s or 0s, save to list
         List<String> allVariants = replaceXsWithFloats(binaryString, binaryvariants);
-
-        return convertBinaryStringToLong(String.copyValueOf(binaryString));
+        return allVariants;
     }
+
+    private static List<Long> convertListOfBinariesToLongs (List<String> listOfBinaries) {
+        List<Long> longs = new ArrayList<Long>();
+        for(String s : listOfBinaries) {
+            longs.add(convertBinaryStringToLong(s));
+        }
+        return longs;
+    }
+
 
     private static List<String> replaceXsWithFloats(char[] binaryString, List<String> binaryvariants) {
 
@@ -110,7 +101,6 @@ public class Johan2 {
         List<String> variants = new ArrayList<String>();
         int noXs = String.copyValueOf(binaryString).replaceAll("[0-1]", "").length();
         int noVariants = (int) Math.pow(2, noXs);
-        System.out.println(noVariants);
         for (int i = 0 ; i < noVariants ; i++ ) {
             String binary = Integer.toBinaryString(i);
             String prefix = "";
