@@ -18,10 +18,6 @@ public class Johan1 {
         List<String> rules = readAnswersToList(rulesFile);
         List<String> tickets = readAnswersToList(ticketsFile);
         System.out.println(checkTickets(tickets, registerValidValues(rules)));
-
-
-
-
     }
 
     private static int checkTickets (List<String> tickets, Set<Integer> validValues) {
@@ -37,7 +33,6 @@ public class Johan1 {
             }
         }
         return sum;
-
     }
 
     private static Set<Integer> registerValidValues (List<String> list) {

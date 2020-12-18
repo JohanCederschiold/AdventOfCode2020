@@ -16,10 +16,43 @@ public class Johan2 {
         List<String> tickets = readAnswersToList(ticketsFile);
         List<String> validTickets = filterValidTickets(tickets, registerValidValues(rules));
         Map<Integer, List<Integer>> testMap = mapFields(makeTicketsToArrays(validTickets));
-
         List<TicketField> tf = mapRulesToTicketFields(rules);
-        //printMap(testMap);
+        Map<Integer, List<String>> possibleMatches = getPossibleFields(testMap, tf);
+
+
+     }
+
+    private static Map<Integer, List<String>> getPossibleFields(Map<Integer, List<Integer>> testMap, List<TicketField> tf) {
+        Map<Integer, List<String>> possibleMatches = new HashMap<Integer, List<String>>();
+
+        for (Map.Entry<Integer, List<Integer>> entry : testMap.entrySet()) {
+            List<String> possibleFieldsMatching = new ArrayList<String>();
+            for (TicketField ticketField : tf) {
+                boolean isMatchingSoFar = true;
+                for (Integer ticketValue : entry.getValue()) {
+                    if (ticketValue > ticketField.getHighSpanTopValue()) {
+                        isMatchingSoFar = false;
+                    }
+                    if (ticketValue < ticketField.getLowSpanBottomValue()) {
+                        isMatchingSoFar = false;
+                    }
+                    if (ticketValue > ticketField.getLowSpanTopValue() && ticketValue < ticketField.getHighSpanBottomValue()){
+                        isMatchingSoFar = false;
+                    }
+                    if(!isMatchingSoFar) {
+                        break;
+                    }
+                }
+                if (isMatchingSoFar) {
+                    possibleFieldsMatching.add(ticketField.getFieldName());
+                }
+            }
+            possibleMatches.put(entry.getKey(), possibleFieldsMatching);
+        }
+        return possibleMatches;
+
     }
+
 
     private static List<TicketField> mapRulesToTicketFields (List<String> rules ) {
 
@@ -27,13 +60,12 @@ public class Johan2 {
         for (String rule : rules ){
             TicketField tf = new TicketField();
             String fieldName = rule.split(":")[0];
-            String onlyNumbers = rule.replace(fieldName, "").replaceAll("[0-9]", ":");
-            System.out.println(onlyNumbers);
-
-//             tf.setLowSpanBottomValue(sc.nextInt());
-//            tf.setLowSpanTopValue(sc.nextInt());
-//            tf.setHighSpanBottomValue(sc.nextInt());
-//            tf.setHighSpanTopValue(sc.nextInt());
+            tf.setFieldName(fieldName);
+            String [] onlyNumbers = rule.replace(fieldName, "").replaceAll("\\D+", " ").split(" ");
+            tf.setLowSpanBottomValue(Integer.parseInt(onlyNumbers[1].trim()));
+            tf.setLowSpanTopValue(Integer.parseInt(onlyNumbers[2].trim()));
+            tf.setHighSpanBottomValue(Integer.parseInt(onlyNumbers[3].trim()));
+            tf.setHighSpanTopValue(Integer.parseInt(onlyNumbers[4].trim()));
             ticketFields.add(tf);
         }
         return ticketFields;
