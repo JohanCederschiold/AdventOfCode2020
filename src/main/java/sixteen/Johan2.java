@@ -10,6 +10,7 @@ public class Johan2 {
 
     private static String rulesFile = "src/main/java/sixteen/rulex.txt";
     private static String ticketsFile = "src/main/java/sixteen/tickets.txt";
+    private static int [] myticket = {89,139,79,151,97,67,71,53,59,149,127,131,103,109,137,73,101,83,61,107};
 
     public static void main(String[] args) throws IOException {
         List<String> rules = readAnswersToList(rulesFile);
@@ -18,8 +19,49 @@ public class Johan2 {
         Map<Integer, List<Integer>> testMap = mapFields(makeTicketsToArrays(validTickets));
         List<TicketField> tf = mapRulesToTicketFields(rules);
         Map<Integer, List<String>> possibleMatches = getPossibleFields(testMap, tf);
+        Map<Integer, List<String>> filtered = filterDownFields(possibleMatches);
+        System.out.println(calculateTicketValue(filtered));
+     }
 
+     private static long calculateTicketValue (Map<Integer, List<String>> filteredFields) {
+        long sum = 0;
+        for (Map.Entry<Integer, List<String>> entry : filteredFields.entrySet()) {
+            if (entry.getValue().get(0).startsWith("departure")) {
+                if (sum == 0) {
+                    sum = myticket[entry.getKey()];
+                } else {
+                    sum *= myticket[entry.getKey()];
+                }
+            }
+        }
+        return sum;
+     }
 
+     private static Map<Integer, List<String>> filterDownFields(Map<Integer, List<String>> filterThis) {
+         List<Integer> completedKeys = new ArrayList<Integer>();
+
+        while (true) {
+            int currentFilterKey = -1;
+            for (Map.Entry<Integer, List<String>> entry : filterThis.entrySet()) {
+                if (!completedKeys.contains(entry.getKey()) && entry.getValue().size() == 1) {
+                    currentFilterKey = entry.getKey();
+                    completedKeys.add(entry.getKey());
+                    break;
+                }
+            }
+            if (completedKeys.size() == filterThis.size()) {
+                break;
+            }
+            for (Map.Entry<Integer, List<String>> entry : filterThis.entrySet()) {
+                if (entry.getKey() != currentFilterKey) {
+                    //entry.getValue().remove(filterThis.get(currentFilterKey).get(0));
+                    List<String> fields = entry.getValue();
+                    fields.remove(filterThis.get(currentFilterKey).get(0));
+                    filterThis.put(entry.getKey(), fields);
+                }
+            }
+        }
+        return filterThis;
      }
 
     private static Map<Integer, List<String>> getPossibleFields(Map<Integer, List<Integer>> testMap, List<TicketField> tf) {
@@ -50,9 +92,7 @@ public class Johan2 {
             possibleMatches.put(entry.getKey(), possibleFieldsMatching);
         }
         return possibleMatches;
-
     }
-
 
     private static List<TicketField> mapRulesToTicketFields (List<String> rules ) {
 
@@ -69,16 +109,6 @@ public class Johan2 {
             ticketFields.add(tf);
         }
         return ticketFields;
-    }
-
-    private static void printMap(Map<Integer, List<Integer>> testMap) {
-        for (Map.Entry<Integer, List<Integer>> entry : testMap.entrySet()) {
-            System.out.printf("-------------Field no %d----------------------%n", entry.getKey());
-            for (Integer i : entry.getValue()) {
-                System.out.printf("%d ", i);
-            }
-            System.out.println("-------------------------------------------------");
-        }
     }
 
     private static Map<Integer, List<Integer>> mapFields (List<String[]> ticketsAndFields) {
